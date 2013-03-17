@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Web
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coverity.Security", "Coverity.Security\Coverity.Security.csproj", "{5DFB1ED2-9271-4BB7-B17C-724E67A103D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coverity.Security.Tests", "Coverity.Security.Tests\Coverity.Security.Tests.csproj", "{D6A90379-DE0B-487F-ACEA-299D46F566F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coverity.Security.Example", "Coverity.Security.Example\Coverity.Security.Example.csproj", "{04B1783B-D357-4ADB-A9E0-0F6B468B93B3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5DFB1ED2-9271-4BB7-B17C-724E67A103D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DFB1ED2-9271-4BB7-B17C-724E67A103D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DFB1ED2-9271-4BB7-B17C-724E67A103D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DFB1ED2-9271-4BB7-B17C-724E67A103D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6A90379-DE0B-487F-ACEA-299D46F566F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A90379-DE0B-487F-ACEA-299D46F566F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A90379-DE0B-487F-ACEA-299D46F566F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A90379-DE0B-487F-ACEA-299D46F566F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04B1783B-D357-4ADB-A9E0-0F6B468B93B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04B1783B-D357-4ADB-A9E0-0F6B468B93B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04B1783B-D357-4ADB-A9E0-0F6B468B93B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04B1783B-D357-4ADB-A9E0-0F6B468B93B3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
