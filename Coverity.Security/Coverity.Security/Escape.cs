@@ -333,11 +333,7 @@ namespace Coverity.Security
         }
 
         /// <summary>
-        ///  Same as <see cref="UriParam"/> for now.
-        ///  <p>
-        ///  Eventually, this method will evolve into filtering the URI so that
-        ///  it is safely considered as a URL by a web browser, and does not contain
-        ///  malicious payloads (data:text/html..., javascript:, etc.).
+        ///  Alias for <see cref="UriParam"/>.
         /// </summary>
         /// <param name="input">Input the string to be escaped</param>
         /// <returns>The URI encoded string or <code>null</code> if <code>input</code> is null</returns>

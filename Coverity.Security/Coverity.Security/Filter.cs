@@ -36,7 +36,7 @@ namespace Coverity.Security
      * <p>
      * These methods fit into the nested escaper framework that the Escape class supports, and
      * should be used as the innermost "escaper" to ensure correctness, e.g.
-     * &lt;iframe src="${cov:htmlEscape(cov:asURL(param.web)}"> &lt;/iframe>
+     * &lt;iframe src="@Cov.AsURL(param.web)"> &lt;/iframe>
      * Ensure that that param.web cannot escape the src attribute, but also ensures that it cannot
      * be a URL that causes XSS.
      * <p>
