@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@using Coverity.Security;
+
+<div data="@Escape.Html(ViewBag.Attribute)">
+    Hello @Escape.HtmlText(ViewBag.Name). 
+</div>
+
+
+<a href="@Escape.Html(Escape.Uri(ViewBag.Url))">
+  Click me
+</a>
+
+<a style="font-family:'@Escape.Html(Escape.CssString(ViewBag.Font))'">
+  Click me
+</a>
+
+<script type="text/javascript">
+  var str = '@Escape.JsString(ViewBag.JsString)';
+  // Do something with the string `str`
+</script>
+
+<div id="forMyContent"></div>
+<script>
+    var foo = "<h1>@Escape.JsString(Escape.Html(ViewBag.JsString))</h1>";
+    $("#forMyContent").html(foo);
+</script>
+
+<script type="text/javascript">
+    var num = @Coverity.Security.Filter.AsNumber(ViewBag.Number);
+    // Do something with the number `num`
+</script>
+
+<style>
+  #foo[id ~= '@Escape.CssString(ViewBag.CssID)'] {
+    background-color: pink !important;
+  }
+</style>
+
+<style>
+  #foo {
+    background: url('@Escape.CssString(ViewBag.BackgroundUrl)');
+  }
+</style>
+
+
+<style>
+  #foo {
+    background-color: @Coverity.Security.Filter.AsCssColor(ViewBag.BackgroundColour);
+  }
+</style>
+
+<a href="/path/page?elmt=1#@Escape.Html(ViewBag.LinkFragment)">
+  Link name
+</a>
+
+<a href="http://example.com/path/?@Escape.Uri(ViewBag.Name)=@Escape.Uri(ViewBag.Number)">
+  Click me
+</a>
