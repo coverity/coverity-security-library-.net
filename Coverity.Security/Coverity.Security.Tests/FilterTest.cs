@@ -24,6 +24,7 @@
  *   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
  *   OF SUCH DAMAGE.
  */
+
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,72 +33,54 @@ namespace Coverity.Security.Tests
     [TestClass]
     public class FilterTest
     {
-        string[] colorTrueTests = {
-                //Named Color
-                "AliceBlue",
-                "white",
-                "PaleVioletRed",
+        private string[] colorTrueTests =
+        {
+            //Named Color
+            "AliceBlue", "white", "PaleVioletRed",
 
-                //Hex Color
-                "#fff",
-                "#FFF",
-                "#0fF056"
+            //Hex Color
+            "#fff", "#FFF", "#0fF056"
         };
 
-        string[] colorFalseTests = {
-                //named Color
-                "#1",
-                "this is not a name",
-                "efe fef",
-                "foo()<>{}",
-                "\09 thisIsPossibleButNotConsidered",
+        private string[] colorFalseTests =
+        {
+            //named Color
+            "#1", "this is not a name", "efe fef", "foo()<>{}", "\09 thisIsPossibleButNotConsidered",
 
-                //Hex Color
-                "#1",
-                "12345",
-                "#12",
-                "#1223",
-                "#12233",
-                "#122g34",
-                "\0#123",
-                "\f#123",
-                "\n#123",
-                ""
+            //Hex Color
+            "#1", "12345", "#12", "#1223", "#12233", "#122g34", "\0#123", "\f#123", "\n#123", ""
         };
 
         [TestMethod]
         public void TestAsCssColorDefault_Invalid()
         {
-            string defaultColour = "blue";
+            var defaultColour = "blue";
             foreach (var color in colorFalseTests)
             {
-                string filtered = Filter.AsCssColor(color, defaultColour);
+                var filtered = Filter.AsCssColor(color, defaultColour);
                 Assert.IsTrue(filtered == defaultColour);
-
             }
         }
 
         [TestMethod]
         public void TestAsCssColor_Invalid()
         {
-            string invalid = "invalid";
+            var invalid = "invalid";
             foreach (var color in colorFalseTests)
             {
-                string filtered = Filter.AsCssColor(color);
+                var filtered = Filter.AsCssColor(color);
                 Assert.IsTrue(filtered == invalid);
-
             }
         }
 
         [TestMethod]
         public void TestAsCssColorDefault_Valid()
         {
-            string defaultColour = "blue";
+            var defaultColour = "blue";
             foreach (var color in colorTrueTests)
             {
-                string filtered = Filter.AsCssColor(color, defaultColour);
+                var filtered = Filter.AsCssColor(color, defaultColour);
                 Assert.IsTrue(filtered == color);
-
             }
         }
 
@@ -106,38 +89,28 @@ namespace Coverity.Security.Tests
         {
             foreach (var color in colorTrueTests)
             {
-                string filtered = Filter.AsCssColor(color);
+                var filtered = Filter.AsCssColor(color);
                 Assert.IsTrue(filtered == color);
             }
         }
 
 
-        string[] numberFalseTests = {
+        private string[] numberFalseTests =
+        {
             //asNumber
-            ".",
-            "+65266+",
-            "-+1.266",
-            "65.65.",
+            ".", "+65266+", "-+1.266", "65.65.",
 
             //asHex
-            "0xefefefg",
-            "0xag",
-            "abc",
-            "\\x15"
+            "0xefefefg", "0xag", "abc", "\\x15"
         };
-        string[] numberTrueTests = {
+
+        private string[] numberTrueTests =
+        {
             //asNumber
-            "+1.425",
-            "65.",
-            "-64.32",
-            "42",
-            "-.04",
-            "0.2323232",
+            "+1.425", "65.", "-64.32", "42", "-.04", "0.2323232",
 
             //asHex
-            "0xefefef",
-            "0x0ff",
-            "0x234345"
+            "0xefefef", "0x0ff", "0x234345"
         };
 
         [TestMethod]
@@ -145,7 +118,7 @@ namespace Coverity.Security.Tests
         {
             foreach (var number in numberTrueTests)
             {
-                string filtered = Filter.AsNumber(number);
+                var filtered = Filter.AsNumber(number);
                 Assert.IsTrue(filtered == number);
             }
         }
@@ -153,10 +126,10 @@ namespace Coverity.Security.Tests
         [TestMethod]
         public void TestAsNumberDefault_Valid()
         {
-            string defaultNumber = "1";
+            var defaultNumber = "1";
             foreach (var number in numberTrueTests)
             {
-                string filtered = Filter.AsNumber(number, defaultNumber);
+                var filtered = Filter.AsNumber(number, defaultNumber);
                 Assert.IsTrue(filtered == number);
             }
         }
@@ -164,10 +137,10 @@ namespace Coverity.Security.Tests
         [TestMethod]
         public void TestAsNumberDefault_Invalid()
         {
-            string defaultNumber = "1";
+            var defaultNumber = "1";
             foreach (var number in numberFalseTests)
             {
-                string filtered = Filter.AsNumber(number, defaultNumber);
+                var filtered = Filter.AsNumber(number, defaultNumber);
                 Assert.IsTrue(filtered == defaultNumber);
             }
         }
@@ -175,10 +148,10 @@ namespace Coverity.Security.Tests
         [TestMethod]
         public void TestAsNumber_Invalid()
         {
-            string defaultNumber = "0";
+            var defaultNumber = "0";
             foreach (var number in numberFalseTests)
             {
-                string filtered = Filter.AsNumber(number);
+                var filtered = Filter.AsNumber(number);
                 Assert.IsTrue(filtered == defaultNumber);
             }
         }
@@ -187,53 +160,38 @@ namespace Coverity.Security.Tests
         [TestMethod]
         public void TestAsNumberOctal_Valid()
         {
-            string octal = "0777";
-            string filtered = Filter.AsNumber(octal);
+            var octal = "0777";
+            var filtered = Filter.AsNumber(octal);
             Assert.IsTrue(Convert.ToInt32(filtered) == Convert.ToInt32(octal));
         }
 
-        string[] urlFalseTests = {
-            "javascript:test('http:')",
-            "jaVascRipt:test",
-            "\\UNC-PATH\\",
-            "data:test",
-            "about:blank",
-            "javascript\n:",
-            "vbscript:IE",
-            "data&#58boo",
-            "dat\0a:boo"
+        private string[] urlFalseTests =
+        {
+            "javascript:test('http:')", "jaVascRipt:test", "\\UNC-PATH\\", "data:test", "about:blank",
+            "javascript\n:", "vbscript:IE", "data&#58boo", "dat\0a:boo"
         };
 
-        string[] urlTrueTests = {
-            "\\\\UNC-PATH\\",
-            "http://host/url",
-            "hTTp://host/url",
-            "//coverity.com/lo",
-            "/base/path",
-            "https://coverity.com",
-            "mailto:srl@coverity.com",
-            "maiLto:srl@coverity.com",
-            "ftp://coverity.com/elite.warez.tgz",
-            ""
+        private string[] urlTrueTests =
+        {
+            "\\\\UNC-PATH\\", "http://host/url", "hTTp://host/url", "//coverity.com/lo", "/base/path",
+            "https://coverity.com", "mailto:srl@coverity.com", "maiLto:srl@coverity.com",
+            "ftp://coverity.com/elite.warez.tgz", ""
         };
 
-        string[] urlFlexibleTrueTests = {
-                "tel:5556667777",
-                "gopher:something something",
-                "test.html"
-        };
+        private string[] urlFlexibleTrueTests = {"tel:5556667777", "gopher:something something", "test.html"};
 
         [TestMethod]
         public void TestFlexibleUrl_Valid()
         {
             foreach (var url in urlTrueTests)
             {
-                string filtered = Filter.AsFlexibleURL(url);
+                var filtered = Filter.AsFlexibleUrl(url);
                 Assert.IsTrue(filtered == url);
             }
+
             foreach (var url in urlFlexibleTrueTests)
             {
-                string filtered = Filter.AsFlexibleURL(url);
+                var filtered = Filter.AsFlexibleUrl(url);
                 Assert.IsTrue(filtered == url);
             }
         }
@@ -243,7 +201,7 @@ namespace Coverity.Security.Tests
         {
             foreach (var url in urlFalseTests)
             {
-                string filtered = Filter.AsFlexibleURL(url);
+                var filtered = Filter.AsFlexibleUrl(url);
                 Assert.IsTrue(filtered == "./" + url);
             }
         }
@@ -253,7 +211,7 @@ namespace Coverity.Security.Tests
         {
             foreach (var url in urlFalseTests)
             {
-                string filtered = Filter.AsURL(url);
+                var filtered = Filter.AsUrl(url);
                 Assert.IsTrue(filtered == "./" + url);
             }
         }
@@ -263,10 +221,9 @@ namespace Coverity.Security.Tests
         {
             foreach (var url in urlTrueTests)
             {
-                string filtered = Filter.AsURL(url);
+                var filtered = Filter.AsUrl(url);
                 Assert.IsTrue(filtered == url);
             }
         }
-
     }
 }

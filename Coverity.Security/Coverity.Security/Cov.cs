@@ -1,177 +1,206 @@
 ﻿using System;
 using System.Web;
+using JetBrains.Annotations;
 
 namespace Coverity.Security
 {
-    public class Cov
+    [PublicAPI]
+    public static class Cov
     {
-        public static IHtmlString Html(Object input)
+#if NETSTANDARD
+        public static string Html(string input) => Escape.Html(input);
+
+        public static string HtmlText(string input) => Escape.HtmlText(input);
+
+        public static string JsString(string input) => Escape.JsString(input);
+
+        public static string JsRegex(string input) => Escape.JsRegex(input);
+
+        public static string CssString(string input) => Escape.CssString(input);
+
+        public static string AsNumber(string input) => Filter.AsNumber(input);
+
+        public static string AsNumber(string input, string defaultNumber) => Filter.AsNumber(input, defaultNumber);
+
+        public static string AsCssColor(string input) => Filter.AsCssColor(input);
+
+        public static string AsCssColor(string input, string defaultColor) => Filter.AsCssColor(input, defaultColor);
+#else
+        public static IHtmlString Html(object input)
         {
-            if (input is string)
+            switch (input)
             {
-                return new HtmlString(Escape.Html((string)input));
+                case string s:
+                    return new HtmlString(Escape.Html(s));
+                case IHtmlString htmlString:
+                    return new HtmlString(Escape.Html(htmlString.ToHtmlString()));
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
+        }
+        
+        public static IHtmlString HtmlText(object input)
+        {
+            switch (input)
             {
-                return new HtmlString(Escape.Html(((IHtmlString)input).ToHtmlString()));
+                case string s:
+                    return new HtmlString(Escape.HtmlText(s));
+                case IHtmlString htmlString:
+                    return new HtmlString(Escape.HtmlText(htmlString.ToHtmlString()));
+                default:
+                    return null;
             }
-            return null;
+        }
+        
+        public static IHtmlString JsString(object input)
+        {
+            switch (input)
+            {
+                case string s:
+                    return new HtmlString(Escape.JsString(s));
+                case IHtmlString htmlString:
+                    return new HtmlString(Escape.JsString(htmlString.ToHtmlString()));
+                default:
+                    return null;
+            }
         }
 
-        public static IHtmlString HtmlText(Object input)
+        public static IHtmlString JsRegex(object input)
         {
-            if (input is string)
+            switch (input)
             {
-                return new HtmlString(Escape.HtmlText((string)input));
+                case string s:
+                    return new HtmlString(Escape.JsRegex(s));
+                case IHtmlString htmlString:
+                    return new HtmlString(Escape.JsRegex(htmlString.ToHtmlString()));
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
-            {
-                return new HtmlString(Escape.HtmlText(((IHtmlString)input).ToHtmlString()));
-            }
-            return null;
         }
 
-        public static string Uri(Object input)
+        public static IHtmlString CssString(object input)
         {
-            if (input is string)
+            switch (input)
             {
-                return Escape.Uri((string)input);
+                case string s:
+                    return new HtmlString(Escape.CssString(s));
+                case IHtmlString htmlString:
+                    return new HtmlString(Escape.CssString(htmlString.ToHtmlString()));
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
-            {
-                return Escape.Uri(((IHtmlString)input).ToHtmlString());
-            }
-            return null;
         }
 
-        public static string UriParam(Object input)
+        public static IHtmlString AsNumber(object input)
         {
-            if (input is string)
+            switch (input)
             {
-                return Escape.UriParam((string)input);
+                case string s:
+                    return new HtmlString(Filter.AsNumber(s));
+                case IHtmlString htmlString:
+                    return new HtmlString(Filter.AsNumber(htmlString.ToHtmlString()));
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
-            {
-                return Escape.UriParam(((IHtmlString)input).ToHtmlString());
-            }
-            return null;
         }
 
-        public static IHtmlString JsString(Object input)
+        public static IHtmlString AsNumber(object input, string defaultNumber)
         {
-            if (input is string)
+            switch (input)
             {
-                return new HtmlString(Escape.JsString((string)input));
+                case string s:
+                    return new HtmlString(Filter.AsNumber(s, defaultNumber));
+                case IHtmlString htmlString:
+                    return new HtmlString(Filter.AsNumber(htmlString.ToHtmlString(), defaultNumber));
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
-            {
-                return new HtmlString(Escape.JsString(((IHtmlString)input).ToHtmlString()));
-            }
-            return null;
         }
 
-        public static IHtmlString JsRegex(Object input)
+        public static IHtmlString AsCssColor(object input)
         {
-            if (input is string)
+            switch (input)
             {
-                return new HtmlString(Escape.JsRegex((string)input));
+                case string s:
+                    return new HtmlString(Filter.AsCssColor(s));
+                case IHtmlString htmlString:
+                    return new HtmlString(Filter.AsCssColor(htmlString.ToHtmlString()));
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
-            {
-                return new HtmlString(Escape.JsRegex(((IHtmlString)input).ToHtmlString()));
-            }
-            return null;
         }
 
-        public static IHtmlString CssString(Object input)
+        public static IHtmlString AsCssColor(object input, string defaultColor)
         {
-            if (input is string)
+            switch (input)
             {
-                return new HtmlString(Escape.CssString((string)input));
+                case string s:
+                    return new HtmlString(Filter.AsCssColor(s, defaultColor));
+                case IHtmlString htmlString:
+                    return new HtmlString(Filter.AsCssColor(htmlString.ToHtmlString(), defaultColor));
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
+        }
+#endif
+        public static string Uri(object input)
+        {
+            switch (input)
             {
-                return new HtmlString(Escape.CssString(((IHtmlString)input).ToHtmlString()));
+                case string s:
+                    return Escape.Uri(s);
+#if NET4 
+                case IHtmlString htmlString:
+                    return Escape.Uri(htmlString.ToHtmlString());
+#endif
+                default:
+                    return null;
             }
-            return null;
         }
 
-        public static IHtmlString AsNumber(Object input)
+        public static string UriParam(object input)
         {
-            if (input is string)
+            switch (input)
             {
-                return new HtmlString(Filter.AsNumber((string)input));
+                case string s:
+                    return Escape.UriParam(s);
+#if NET4 
+                case IHtmlString htmlString:
+                    return Escape.UriParam(htmlString.ToHtmlString());
+#endif
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
-            {
-                return new HtmlString(Filter.AsNumber(((IHtmlString)input).ToHtmlString()));
-            }
-            return null;
         }
 
-        public static IHtmlString AsNumber(Object input, string defaultNumber)
+        public static string AsUrl(object input)
         {
-            if (input is string)
+            switch (input)
             {
-                return new HtmlString(Filter.AsNumber((string)input, defaultNumber));
+                case string s:
+                    return Filter.AsUrl(s);
+#if NET4 
+                case IHtmlString htmlString:
+                    return Filter.AsURL(htmlString.ToHtmlString());
+#endif
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
-            {
-                return new HtmlString(Filter.AsNumber(((IHtmlString)input).ToHtmlString(), defaultNumber));
-            }
-            return null;
         }
 
-        public static IHtmlString AsCssColor(Object input)
+        public static string AsFlexibleUrl(object input)
         {
-            if (input is string)
+            switch (input)
             {
-                return new HtmlString(Filter.AsCssColor((string)input));
+                case string s:
+                    return Filter.AsFlexibleUrl(s);
+#if NET4 
+                case IHtmlString htmlString:
+                    return Filter.AsFlexibleURL(htmlString.ToHtmlString());
+#endif
+                default:
+                    return null;
             }
-            else if (input is IHtmlString)
-            {
-                return new HtmlString(Filter.AsCssColor(((IHtmlString)input).ToHtmlString()));
-            }
-            return null;
-        }
-
-        public static IHtmlString AsCssColor(Object input, string defaultColor)
-        {
-            if (input is string)
-            {
-                return new HtmlString(Filter.AsCssColor((string)input, defaultColor));
-            }
-            else if (input is IHtmlString)
-            {
-                return new HtmlString(Filter.AsCssColor(((IHtmlString)input).ToHtmlString(), defaultColor));
-            }
-            return null;
-        }
-
-        public static string AsURL(Object input)
-        {
-            if (input is string)
-            {
-                return Filter.AsURL((string)input);
-            }
-            else if (input is IHtmlString)
-            {
-                return Filter.AsURL(((IHtmlString)input).ToHtmlString());
-            }
-            return null;
-        }
-
-        public static string AsFlexibleURL(Object input)
-        {
-            if (input is string)
-            {
-                return Filter.AsFlexibleURL((string)input);
-            }
-            else if (input is IHtmlString)
-            {
-                return Filter.AsFlexibleURL(((IHtmlString)input).ToHtmlString());
-            }
-            return null;
         }
     }
 }

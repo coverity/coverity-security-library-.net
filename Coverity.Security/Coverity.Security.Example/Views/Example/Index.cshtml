@@ -6,20 +6,20 @@
 
 
 <div data="@ViewBag.Attribute">
-    Hello @Cov.HtmlText(ViewBag.Name). 
+    Hello @Cov.HtmlText(ViewBag.Name).
 </div>
 
 <a href="@Cov.AsURL(ViewBag.Url)">
-  Click me
+    Click me
 </a>
 
-<a style="font-family:'@Cov.CssString(ViewBag.Font)'">
-  Click me
+<a style="font-family: '@Cov.CssString(ViewBag.Font)'">
+    Click me
 </a>
 
 <script type="text/javascript">
-  var str = '@Cov.JsString(ViewBag.JsString)';
-  // Do something with the string `str`
+    var str = '@Cov.JsString(ViewBag.JsString)';
+    // Do something with the string `str`
 </script>
 
 <div id="forMyContent"></div>
@@ -34,27 +34,21 @@
 </script>
 
 <style>
-  #foo[id ~= '@Cov.CssString(ViewBag.CssID)'] {
-    background-color: pink !important;
-  }
+    #foo[id~='@Cov.CssString(ViewBag.CssID)'] { background-color: pink !important; }
 </style>
 
 <style>
-  #foo {
-    background: url('@Cov.CssString(ViewBag.BackgroundUrl)');
-  }
+    #foo { background: url('@Cov.CssString(ViewBag.BackgroundUrl)'); }
 </style>
 
 <style>
-  #foo {
-    background-color: @Cov.AsCssColor(ViewBag.BackgroundColour);
-  }
+    #foo { background-color: @Cov.AsCssColor(ViewBag.BackgroundColour); }
 </style>
 
 <a href="/path/page?elmt=1#@ViewBag.LinkFragment">
-  Link name
+    Link name
 </a>
 
 <a href="http://example.com/path/?@Cov.Uri(ViewBag.Name)=@Cov.Uri(ViewBag.Number)">
-  Click me
+    Click me
 </a>

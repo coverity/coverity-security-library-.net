@@ -47,13 +47,13 @@ namespace Coverity.Security
      */
     public class Filter
     {
-        private static Regex OCTAL_REGEX = new Regex("^(0+)([0-7]*)$", RegexOptions.Compiled);
-        private static Regex NUMBER_REGEX = new Regex("^[-+]?((\\.[0-9]+)|([0-9]+\\.?[0-9]*))$", RegexOptions.Compiled);
-        private static Regex HEX_REGEX = new Regex("^0x[0-9a-fA-F]+$", RegexOptions.Compiled);
-        private static Regex CSS_HEX_COLOR_REGEX = new Regex("^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$", RegexOptions.Compiled);
-        private static Regex CSS_NAMED_COLOR_REGEX = new Regex("^[a-zA-Z]{1,20}$", RegexOptions.Compiled);
-        private static Regex URL_REGEX = new Regex("^(/|\\\\\\\\|https?:|ftp:|mailto:).*$", (RegexOptions.Compiled | RegexOptions.IgnoreCase));
-        private static Regex SCHEME_REGEX = new Regex("^(javascript|vbscript|data|about)$", RegexOptions.Compiled);
+        private static readonly Regex OctalRegex = new Regex("^(0+)([0-7]*)$", RegexOptions.Compiled);
+        private static readonly Regex NumberRegex = new Regex("^[-+]?((\\.[0-9]+)|([0-9]+\\.?[0-9]*))$", RegexOptions.Compiled);
+        private static readonly Regex HexRegex = new Regex("^0x[0-9a-fA-F]+$", RegexOptions.Compiled);
+        private static readonly Regex CssHexColorRegex = new Regex("^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$", RegexOptions.Compiled);
+        private static readonly Regex CssNamedColorRegex = new Regex("^[a-zA-Z]{1,20}$", RegexOptions.Compiled);
+        private static readonly Regex UrlRegex = new Regex("^(/|\\\\\\\\|https?:|ftp:|mailto:).*$", (RegexOptions.Compiled | RegexOptions.IgnoreCase));
+        private static readonly Regex SchemeRegex = new Regex("^(javascript|vbscript|data|about)$", RegexOptions.Compiled);
 
 
         /// <summary>
@@ -84,16 +84,16 @@ namespace Coverity.Security
         {
             if (number == null)
                 return null;
-            string trimNumber = number.Trim();
+            var trimNumber = number.Trim();
 
             //Do not allow octal to keep in line with java parse* functions
-            Match octal = OCTAL_REGEX.Match(trimNumber);
+            var octal = OctalRegex.Match(trimNumber);
             if (octal.Success)
                 return octal.Groups[2].Value;
 
-            if (NUMBER_REGEX.IsMatch(trimNumber))
+            if (NumberRegex.IsMatch(trimNumber))
                 return trimNumber;
-            if (HEX_REGEX.IsMatch(trimNumber))
+            if (HexRegex.IsMatch(trimNumber))
                 return trimNumber;
             return defaultNumber;
         }
@@ -122,7 +122,6 @@ namespace Coverity.Security
         /// essentially preserve those semantics.
         /// </summary>
         /// <param name="color">The potential css color to filter</param>
-        /// <param name="defaultColor">A default string to return if the color argument is not a potentially valid CSS color </param>
         /// <returns>The color specified or the string "invalid"</returns>
         public static string AsCssColor(string color)
         {
@@ -139,9 +138,9 @@ namespace Coverity.Security
         {
             if (color == null)
                 return null;
-            if (CSS_HEX_COLOR_REGEX.Match(color).Success)
+            if (CssHexColorRegex.Match(color).Success)
                 return color;
-            if (CSS_NAMED_COLOR_REGEX.Match(color).Success)
+            if (CssNamedColorRegex.Match(color).Success)
                 return color;
 
             return defaultColor;
@@ -184,7 +183,7 @@ namespace Coverity.Security
         /// </summary>
         /// <param name="url">The potentially tainted URL to be Filtered</param>
         /// <returns>A safe version of the URL or <code>null</code> if <code>input</code> is null</returns>
-        public static string AsURL(string url)
+        public static string AsUrl(string url)
         {
             if (url == null)
                 return null;
@@ -192,7 +191,7 @@ namespace Coverity.Security
             if (url.Length == 0)
                 return url;
 
-            if (URL_REGEX.Match(url).Success)
+            if (UrlRegex.Match(url).Success)
                 return url;
 
             //Our fallback is to transform this to a relative URL
@@ -213,7 +212,7 @@ namespace Coverity.Security
         /// </summary>
         /// <param name="url">The potentially tainted URL to be filtered</param>
         /// <returns>A safe version of the URL or <code>null</code> if <code>input</code> is null</returns>
-        public static string AsFlexibleURL(string url)
+        public static string AsFlexibleUrl(string url)
         {
             if (url == null)
                 return null;
@@ -225,7 +224,7 @@ namespace Coverity.Security
                 return url;
             }
 
-            int i = 0;
+            var i = 0;
             //Allow UNC paths
             if (url.StartsWith("\\\\"))
             {
@@ -235,7 +234,7 @@ namespace Coverity.Security
             //Find a potential scheme name
             for (; i < url.Length; i++)
             {
-                char c = url[i];
+                var c = url[i];
                 //These are valid scheme characters from RFC 3986
                 //Assumption: These are not escape characters in any context
                 if (!(
@@ -269,7 +268,7 @@ namespace Coverity.Security
 
         private static bool ValidateScheme(string scheme)
         {
-            return !SCHEME_REGEX.Match(scheme).Success;
+            return !SchemeRegex.Match(scheme).Success;
         }
     }
 }

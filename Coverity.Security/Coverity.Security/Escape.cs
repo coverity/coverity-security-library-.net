@@ -28,7 +28,7 @@ using System.Text;
 
 namespace Coverity.Security
 {
-    public class Escape
+    public static class Escape
     {
         /// <summary>
         ///  HTML entity escaping for text content and attributes.
@@ -682,44 +682,15 @@ namespace Coverity.Security
         /// <summary>
         ///  SQL LIKE clause escaper.
         ///  <p>
-        ///  This SQL LIKE clause escaper does not protect against SQL injection, but ensure
-        ///  that the string to be consumed in SQL LIKE clause does not alter the current
-        ///  LIKE query by inserting <code>%</code> or <code>_</code>.
-        ///  <p>
-        ///  This escaper has to be used with a safe SQL query construct such as the JPQL
-        ///  named parameterized query in the previous example.
-        ///  <p>
-        ///  This escaper uses by default the <code>@</code> as escape character. The other method
-        ///  <see cref="SqlLikeClause"/></p> allows for using a different escape character such as
-        ///  <code>\</code>. 
-        /// 
-        ///  <p>
-        ///  This SQL LIKE escaper processes the following characters:
-        ///  <ul>
-        ///  <li>
-        ///  SQL LIKE characters: <code>_ (U+005F)</code>, <code>% (U+0025)</code>, 
-        ///                       <code>@ (U+0040)</code>
-        ///  </li>
-        ///  </ul>
-        /// </summary>
-        /// <param name="input">Input the string to be escaped</param>
-        /// <returns>The SQL LIKE escaped string or <code>null</code> if <code>input</code> is null</returns>
-        public static string SqlLikeClause(string input)
-        {
-            return SqlLikeClause(input, '@');
-        }
-
-        /// <summary>
-        ///  SQL LIKE clause escaper.
-        ///  <p>
         ///  Similar to <see cref="SqlLikeClause"/>, but allows to specify the escape character
         ///  to be used. When a character different than <code>@</code> is used, <code>@</code> will
         ///  not be escaped by the escaper, and the specified escape character will be.
+        /// </p>
         /// </summary>
         /// <param name="input">The string to be escaped</param>
         /// <param name="escape">The escape character to be used </param>
         /// <returns>The SQL LIKE escaped string or <code>null</code> if <code>input</code> is null</returns>
-        public static string SqlLikeClause(string input, char escape)
+        public static string SqlLikeClause(string input, char escape = '@')
         {
             if (input == null)
                 return null;
@@ -742,7 +713,7 @@ namespace Coverity.Security
         /// </summary>
         /// <param name="length">Length of the original string to to escape</param>
         /// <returns>A stringbuilder with a buffer size twice that of the original string</returns>
-        public static StringBuilder AllocateStringBuilder(int length)
+        private static StringBuilder AllocateStringBuilder(int length)
         {
             // Allocate enough temporary buffer space to avoid reallocation in most
             // cases. If you believe you will output large amount of data at once

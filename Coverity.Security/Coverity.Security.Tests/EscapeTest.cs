@@ -24,8 +24,8 @@
  *   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
  *   OF SUCH DAMAGE.
  */
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Coverity.Security;
 using System;
 
 namespace Coverity.Security.Tests
@@ -33,31 +33,28 @@ namespace Coverity.Security.Tests
     [TestClass]
     public class EscapeTest
     {
-        public static string[] WEB_NEW_LINES = {
-        "\n", "\r", "\f",
-        "\u2028", "\u2029"
-        };
+        public static string[] WEB_NEW_LINES = {"\n", "\r", "\f", "\u2028", "\u2029"};
 
-        public static string[] WEB_WHITESPACES = {
-            " ", "\t"
-        };
+        public static string[] WEB_WHITESPACES = {" ", "\t"};
 
-        public static string[] HTML_SENSITIVE_CHARS = {
-            "<", ">",  // HTML tags
+        public static string[] HTML_SENSITIVE_CHARS =
+        {
+            "<", ">", // HTML tags
             "'", "\"", // HTML attributes
-            " ", "/"   // HTML tag/attribute name
+            " ", "/" // HTML tag/attribute name
         };
 
-        public static string[] JS_STRING_SENSITIVE_CHARS = {
-            "'", "\"",     // JavaScript string transition
-            "<", "/"       // Potential HTML </script> transition
+        public static string[] JS_STRING_SENSITIVE_CHARS =
+        {
+            "'", "\"", // JavaScript string transition
+            "<", "/" // Potential HTML </script> transition
         };
 
-        public static string[] CSS_STRING_SENSITIVE_CHARS = {
-            "'", "\"",     // CSS string transition
-            "<", ">", "&"  // Potential HTML </style> transition
+        public static string[] CSS_STRING_SENSITIVE_CHARS =
+        {
+            "'", "\"", // CSS string transition
+            "<", ">", "&" // Potential HTML </style> transition
         };
-
 
 
         [TestMethod]
@@ -114,13 +111,11 @@ namespace Coverity.Security.Tests
             // <div>TAINTED_DATA_HERE</div>
             // or the content of an HTML attibute (not DOM event or CSS style)
             // <div data-param="TAINTED_DATA_HERE">...
-            string beforeEscape = "</div><script src=\"http://example.com/?evil=true&param=xss\">"
-                                + "\\ Foobar & '\"><img src=. onerorr=alert(1) > ";
-            string afterEscape = Escape.Html(beforeEscape);
+            var beforeEscape = "</div><script src=\"http://example.com/?evil=true&param=xss\">"
+                               + "\\ Foobar & '\"><img src=. onerorr=alert(1) > ";
+            var afterEscape = Escape.Html(beforeEscape);
 
-            string[] badSequences = {
-            "<", ">", "<script", "</div", "\\", "'", " ", "& "
-            };
+            string[] badSequences = {"<", ">", "<script", "</div", "\\", "'", " ", "& "};
 
             foreach (var badSequence in badSequences)
             {
@@ -139,13 +134,11 @@ namespace Coverity.Security.Tests
             // <div>TAINTED_DATA_HERE</div>
             // or the content of an HTML attibute (not DOM event or CSS style)
             // <div data-param="TAINTED_DATA_HERE">...
-            string beforeEscape = "</div><script src=\"http://example.com/?evil=true&param=xss\">"
-                                + "Foobar & '\"><img src=. onerorr=alert(1) > ";
-            string afterEscape = Escape.HtmlText(beforeEscape);
+            var beforeEscape = "</div><script src=\"http://example.com/?evil=true&param=xss\">"
+                               + "Foobar & '\"><img src=. onerorr=alert(1) > ";
+            var afterEscape = Escape.HtmlText(beforeEscape);
 
-            string[] badSequences = {
-            "<", ">", "<script", "</div",  "'", "\"", "& "
-            };
+            string[] badSequences = {"<", ">", "<script", "</div", "'", "\"", "& "};
 
             foreach (var badSequence in badSequences)
             {
@@ -158,17 +151,15 @@ namespace Coverity.Security.Tests
         {
             // Assume the string is within an HTML <script> tag, like so:
             // <a href="foobar?value=TAINTED_DATA_HERE">
-            string beforeEscape = "close context'\" break context "
-                                + "& + : % </script>"
-                                + "\t \n \f \r (!#foobar$) *.*=?[@]";
-            string afterEscape = Escape.Uri(beforeEscape);
+            var beforeEscape = "close context'\" break context "
+                               + "& + : % </script>"
+                               + "\t \n \f \r (!#foobar$) *.*=?[@]";
+            var afterEscape = Escape.Uri(beforeEscape);
 
-            string[] badSequences = {
-                "% ",
-                "'", "\"",
-                "+", "\t", "\n", "\f", "\r",
-                "(", "!", "#", "$", ")", "*", ".", "=", "?",
-                "[", "@", "]"
+            string[] badSequences =
+            {
+                "% ", "'", "\"", "+", "\t", "\n", "\f", "\r", "(", "!", "#", "$", ")", "*", ".", "=", "?", "[", "@",
+                "]"
             };
 
             foreach (var badSequence in badSequences)
@@ -182,19 +173,14 @@ namespace Coverity.Security.Tests
         {
             // Assume the string is within an HTML <script> tag, like so:
             // <script> var = 'TAINTED_DATA_HERE'; </script>
-            string beforeEscape = "close context'\" continue context \\ break context "
-                                + "\u2029 \u2028 escape HTML context & </script>"
-                                + " control chars: \b \t \n \u000b \f %22";
-            string afterEscape = Escape.JsString(beforeEscape);
+            var beforeEscape = "close context'\" continue context \\ break context "
+                               + "\u2029 \u2028 escape HTML context & </script>"
+                               + " control chars: \b \t \n \u000b \f %22";
+            var afterEscape = Escape.JsString(beforeEscape);
 
-            string[] badSequences = {
-                "'",
-                "\"",
-                " \\ ",
-                "\u2028",
-                "\u2029",
-                "&", "\b", "\t", "\n", "\u000b", "\f", "%",
-                "</script>",
+            string[] badSequences =
+            {
+                "'", "\"", " \\ ", "\u2028", "\u2029", "&", "\b", "\t", "\n", "\u000b", "\f", "%", "</script>",
             };
 
             foreach (var badSequence in badSequences)
@@ -208,18 +194,16 @@ namespace Coverity.Security.Tests
         {
             // Assume the string is within a JavaScript regex:
             // <script> var b = /^TAINTED_DATA_HERE/.test("foo"); </script>
-            string beforeEscape = "close context / continue context \\ break context "
-                                + "\u2029 \u2028 escape HTML context & </script>"
-                                + " ( ) [ ] { } * + - . ? ! ^ $ | "
-                                + " control chars: \t \n \u000b \f \r ";
-            string afterEscape = Escape.JsRegex(beforeEscape);
+            var beforeEscape = "close context / continue context \\ break context "
+                               + "\u2029 \u2028 escape HTML context & </script>"
+                               + " ( ) [ ] { } * + - . ? ! ^ $ | "
+                               + " control chars: \t \n \u000b \f \r ";
+            var afterEscape = Escape.JsRegex(beforeEscape);
 
-            string[] badSequences = {
-                "\t", "\n", "\u000b", "\f", "\r",
-                "</script>", " \\ ", " / ",
-                " ( ", " ) ", " [ ", " ] ", " { ", " } ", " * ",
-                " . ", " + ", " - ", " ? ", " ! ", " ^ ", " $ ",
-                " | "
+            string[] badSequences =
+            {
+                "\t", "\n", "\u000b", "\f", "\r", "</script>", " \\ ", " / ", " ( ", " ) ", " [ ", " ] ", " { ",
+                " } ", " * ", " . ", " + ", " - ", " ? ", " ! ", " ^ ", " $ ", " | "
             };
 
             foreach (var badSequence in badSequences)
@@ -233,18 +217,12 @@ namespace Coverity.Security.Tests
         {
             // Assume the string is within an HTML <style> tag, like so:
             // <style> li [id *= 'TAINTED_DATA_HERE'] { ... } </style>
-            string beforeEscape = "close context' \" continue context \\ break context \n"
-                                + " escape HTML context </style>"
-                                + " control chars: \b \t \n \f \r";
-            string afterEscape = Escape.CssString(beforeEscape);
+            var beforeEscape = "close context' \" continue context \\ break context \n"
+                               + " escape HTML context </style>"
+                               + " control chars: \b \t \n \f \r";
+            var afterEscape = Escape.CssString(beforeEscape);
 
-            string[] badSequences = {
-                "'",
-                "\\ ",
-                "\n", "\r", "\t", "\f", "\r",
-                "\"",
-                "</style>",
-            };
+            string[] badSequences = {"'", "\\ ", "\n", "\r", "\t", "\f", "\r", "\"", "</style>",};
 
             foreach (var badSequence in badSequences)
             {
@@ -257,18 +235,11 @@ namespace Coverity.Security.Tests
         {
             // Assume the string is within an HTML <a> tag, like so:
             //   <a href="TAINTED_DATA_HERE">
-            string beforeEscape = "javascript:alert(1); escape parent context \" "
-                                + " break context % escape HTML context </a>"
-                                + " data:text/html,<script>alert(1)</script>";
-            string afterEscape = Escape.Html(Escape.Uri(beforeEscape));
-            string[] badSequences = {
-                "javascript:",
-                "data:",
-                "(1);",
-                "\"",
-                " % ",
-                "</a>"
-            };
+            var beforeEscape = "javascript:alert(1); escape parent context \" "
+                               + " break context % escape HTML context </a>"
+                               + " data:text/html,<script>alert(1)</script>";
+            var afterEscape = Escape.Html(Escape.Uri(beforeEscape));
+            string[] badSequences = {"javascript:", "data:", "(1);", "\"", " % ", "</a>"};
 
             foreach (var badSequence in badSequences)
             {
@@ -281,18 +252,13 @@ namespace Coverity.Security.Tests
         {
             // Assume the string is within an HTML style attribute, like so:
             // <span style="background-image:url('TAINTED_DATA_HERE')">...
-            string beforeEscape = "javascript:alert(1) break child context % close parent context ') escape"
-                                + " parent context \" escape parent context </span>";
-            string afterEscape = Escape.Html(Escape.CssString(Escape.Uri(beforeEscape)));
-            string[] badSequences = {
-                "javascript:",
-                "javascript&#3A;", // shouldn't occur, in case it did would still fire javascript: uri
-                " % ",
-                " &#25; ",
-                "')",
-                "\n",
-                "\"",
-                "</span>"
+            var beforeEscape = "javascript:alert(1) break child context % close parent context ') escape"
+                               + " parent context \" escape parent context </span>";
+            var afterEscape = Escape.Html(Escape.CssString(Escape.Uri(beforeEscape)));
+            string[] badSequences =
+            {
+                "javascript:", "javascript&#3A;", // shouldn't occur, in case it did would still fire javascript: uri
+                " % ", " &#25; ", "')", "\n", "\"", "</span>"
             };
 
             foreach (var badSequence in badSequences)
@@ -318,7 +284,7 @@ namespace Coverity.Security.Tests
                 Escape.SqlLikeClause(null, '\\');
                 Escape.SqlLikeClause(null);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Test must fail if any exception is thrown
                 Assert.IsTrue(false);
@@ -332,6 +298,5 @@ namespace Coverity.Security.Tests
             Assert.IsTrue(Escape.SqlLikeClause("%_@'+=").Equals("@%@_@@'+="));
             Assert.IsTrue(Escape.SqlLikeClause("%_@'+=\\", '\\').Equals("\\%\\_@'+=\\\\"));
         }
-
     }
 }

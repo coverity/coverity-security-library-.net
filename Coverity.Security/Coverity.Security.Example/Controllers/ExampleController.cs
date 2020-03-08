@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Coverity.Security;
+
 namespace Coverity.Security.Example.Controllers
 {
     public class ExampleController : Controller
@@ -11,7 +12,8 @@ namespace Coverity.Security.Example.Controllers
         //
         // GET: /Example/
         [ValidateInput(false)] // Living life on the edge
-        public ActionResult Index(string name, string url, string font, string jsString, string number, string cssId, string backgroundUrl, string backgroundColour, string linkFragment)
+        public ActionResult Index(string name, string url, string font, string jsString, string number, string cssId,
+            string backgroundUrl, string backgroundColour, string linkFragment)
         {
             ViewBag.Name = name;
             ViewBag.Attribute = name;
@@ -25,6 +27,5 @@ namespace Coverity.Security.Example.Controllers
             ViewBag.LinkFragment = linkFragment;
             return View();
         }
-
     }
 }
